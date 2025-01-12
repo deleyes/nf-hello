@@ -1,5 +1,6 @@
 
 config ?= compileClasspath
+version ?= $(shell grep 'Plugin-Version' plugins/nf-cv/src/resources/META-INF/MANIFEST.MF | awk '{ print $$2 }')
 
 ifdef module 
 mm = :${module}:
@@ -14,6 +15,7 @@ clean:
 	rm -rf plugins/*/build
 	./gradlew clean
 
+# does not work, do `make install` instead
 compile:
 	./gradlew :nextflow:exportClasspath compileGroovy
 	@echo "DONE `date`"
@@ -47,6 +49,11 @@ ifndef class
 else
 	./gradlew ${mm}test --tests ${class}
 endif
+
+install:
+	./gradlew copyPluginZip
+	rm -rf ${HOME}/.nextflow/plugins/nf-cv-${version}
+	cp -r build/plugins/nf-cv-${version} ${HOME}/.nextflow/plugins/
 
 assemble:
 	./gradlew assemble

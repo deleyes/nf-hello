@@ -25,11 +25,15 @@ import groovy.transform.PackageScope
 class HelloConfig {
 
     final private String prefix
+    final private Boolean enabled
+
 
     HelloConfig(Map map){
         def config = map ?: Collections.emptyMap()
         prefix = config.prefix ?: 'Mr.'
+        enabled = config.enabled ?: false
     }
 
     String getPrefix() { prefix }
+
 }

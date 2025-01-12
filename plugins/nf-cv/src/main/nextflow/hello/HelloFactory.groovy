@@ -17,26 +17,25 @@
 package nextflow.hello
 
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 import nextflow.Session
 import nextflow.trace.TraceObserver
-
+import nextflow.trace.TraceObserverFactory
 /**
- * Example workflow events observer
+ * Implements the validation observer factory
  *
  * @author Paolo Di Tommaso <paolo.ditommaso@gmail.com>
  */
-@Slf4j
 @CompileStatic
-class HelloObserver implements TraceObserver {
+class HelloFactory implements TraceObserverFactory {
 
     @Override
-    void onFlowCreate(Session session) {
-        log.info "Pipeline is starting! 🚀"
-    }
-
-    @Override
-    void onFlowComplete() {
-        log.info "Pipeline complete! 👋"
+    Collection<TraceObserver> create(Session session) {
+        final result = new ArrayList()
+        final is_enabled = session.config.navigate('hello.enabled')
+        if (is_enabled) {
+            result.add( new HelloObserver() )
+        }
+        
+        return result
     }
 }
